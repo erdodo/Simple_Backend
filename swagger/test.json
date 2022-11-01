@@ -1,0 +1,1490 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Simple v0.1",
+    "description": "Açıklama",
+    "termsOfService": "http://",
+    "contact": {
+      "email": "erdoganyesil3@gmail.com"
+    },
+    "license": {
+      "name": "Lisans",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "0.1.1"
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8888/api/"
+    },
+    {
+      "url": "https://simple.fungiturkey.org/api/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "tables",
+      "description": "Tüm tablolar için tek api isteği",
+      "externalDocs": {
+        "description": "Daha fazlası için",
+        "url": "http://"
+      }
+    },
+    {
+      "name": "user",
+      "description": "Giriş yapmak,üye olmak, profil ve yetki bilgileri çekmek için kullanılan api grubu",
+      "externalDocs": {
+        "description": "Daha fazlası için",
+        "url": "http://"
+      }
+    },
+    {
+      "name": "password",
+      "description": "Şifre işlemleri için kullanabileceğiniz api grubu",
+      "externalDocs": {
+        "description": "Daha fazlası için",
+        "url": "http://"
+      }
+    }
+  ],
+  "paths": {
+    "/tables/{table_name}": {
+      "post": {
+        "tags": ["tables"],
+        "summary": "Verileri liste halinde getir.",
+        "description": "Tabloda bunlunan verileri belli filtrelemeler yada sıralamalar ile istediği kadar istenilen sayfanın gelmesi için yapılan istek.",
+        "operationId": "getDatas",
+        "requestBody": {
+          "description": "Yeni istek",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/tables_request"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "Başarılı istek",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/tables_responses"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Yetkiniz yok"
+          },
+          "405": {
+            "description": "Geçersiz method"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "table_name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tablo ismi"
+          }
+        ]
+      }
+    },
+    "/tables/{table_name}/{id}/get": {
+      "get": {
+        "tags": ["tables"],
+        "summary": "Verilen id'ye göre istenilen veri",
+        "description": "İstediğiniz tabloda istediğiniz id'ye ait veri",
+        "operationId": "getData",
+        "responses": {
+          "200": {
+            "description": "Başarılı istek",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/get_data_responses"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Yetkiniz yok"
+          },
+          "405": {
+            "description": "Geçersiz method"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "table_name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tablo ismi"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Veri id"
+          }
+        ]
+      }
+    },
+    "/tables/{table_name}/first": {
+      "get": {
+        "tags": ["tables"],
+        "summary": "Tablodaki ilk veri",
+        "description": "Tablodaki ilk veri",
+        "operationId": "getFirst",
+        "responses": {
+          "200": {
+            "description": "Başarılı istek",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/get_data_responses"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Yetkiniz yok"
+          },
+          "405": {
+            "description": "Geçersiz method"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "table_name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tablo ismi"
+          }
+        ]
+      }
+    },
+    "/tables/{table_name}/last": {
+      "get": {
+        "tags": ["tables"],
+        "summary": "Tablodaki ilk veri",
+        "description": "Tablodaki ilk veri",
+        "operationId": "getLast",
+        "responses": {
+          "200": {
+            "description": "Başarılı istek",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/get_data_responses"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Yetkiniz yok"
+          },
+          "405": {
+            "description": "Geçersiz method"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "table_name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tablo ismi"
+          }
+        ]
+      }
+    },
+    "/tables/{table_name}/count": {
+      "post": {
+        "tags": ["tables"],
+        "summary": "Verileri liste halinde getir.",
+        "description": "Tabloda bunlunan verileri belli filtrelemeler yada sıralamalar ile istediği kadar istenilen sayfanın gelmesi için yapılan istek.",
+        "operationId": "getCount",
+        "requestBody": {
+          "description": "Yeni istek",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/tables_request"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "Başarılı istek",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/count_responses"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Yetkiniz yok"
+          },
+          "405": {
+            "description": "Geçersiz method"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "table_name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tablo ismi"
+          }
+        ]
+      }
+    },
+    "/tables/{table_name}/create": {
+      "get": {
+        "tags": ["tables"],
+        "summary": "Veri eklemek için gerekli olan kolonlar",
+        "description": "Veri eklemek için gerekli olan kolonlar",
+        "operationId": "getCreate",
+        "responses": {
+          "200": {
+            "description": "Başarılı istek",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/create_data_responses"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Yetkiniz yok"
+          },
+          "405": {
+            "description": "Geçersiz method"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "table_name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tablo ismi"
+          }
+        ]
+      }
+    },
+    "/tables/{table_name}/store": {
+      "put": {
+        "tags": ["tables"],
+        "summary": "Datalarınızı veritabanına eklemek için kullanılan method",
+        "description": "Datalarınızı veritabanına eklemek için kullanılan method",
+        "operationId": "setStore",
+        "requestBody": {
+          "description": "Yeni istek",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/store_request"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Başarılı istek",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/store_responses"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Kayıt sırasında bir hata ile karşılaşıldı"
+          },
+          "401": {
+            "description": "Yetkiniz yok"
+          },
+          "405": {
+            "description": "Geçersiz method"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "table_name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tablo ismi"
+          }
+        ]
+      }
+    },
+    "/tables/{table_name}/{id}/edit": {
+      "get": {
+        "tags": ["tables"],
+        "summary": "Veri düzenlemek için gerekli olan kolonlar ve veri",
+        "description": "Veri eklemek için gerekli olan kolonlar ve veri",
+        "operationId": "getEdit",
+        "responses": {
+          "200": {
+            "description": "Başarılı istek",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/edit_data_responses"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Yetkiniz yok"
+          },
+          "405": {
+            "description": "Geçersiz method"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "table_name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tablo ismi"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Düzenlecek veri"
+          }
+        ]
+      }
+    },
+    "/tables/{table_name}/{id}/update": {
+      "patch": {
+        "tags": ["tables"],
+        "summary": "Datalarınızı veritabanından güncellemek için kullanılan method",
+        "description": "Datalarınızı veritabanından güncellemek için kullanılan method",
+        "operationId": "setUpdate",
+        "requestBody": {
+          "description": "Yeni istek",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/update_request"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Başarılı istek",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/store_responses"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Kayıt sırasında bir hata ile karşılaşıldı"
+          },
+          "401": {
+            "description": "Yetkiniz yok"
+          },
+          "405": {
+            "description": "Geçersiz method"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "table_name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tablo ismi"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tablo ismi"
+          }
+        ]
+      }
+    },
+    "/tables/{table_name}/{id}/delete": {
+      "delete": {
+        "tags": ["tables"],
+        "summary": "Datalarınızı veritabanından silmek için kullanılan method",
+        "description": "Datalarınızı veritabanından silmek için kullanılan method",
+        "operationId": "delete",
+        "responses": {
+          "200": {
+            "description": "Başarılı istek",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/delete_responses"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Silme işlemi sırasında bir hata ile karşılaşıldı"
+          },
+          "401": {
+            "description": "Yetkiniz yok"
+          },
+          "405": {
+            "description": "Geçersiz method"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "table_name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tablo ismi"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tablo ismi"
+          }
+        ]
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": ["user"],
+        "summary": "Giriş yapmak için kullanılan api methodu",
+        "description": "Token bilgisini almak için kullanılan method",
+        "operationId": "login",
+        "requestBody": {
+          "description": "Yeni istek",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/login_request"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "Başarılı istek",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/login_responses"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bir hata ile karşılaşıldı"
+          },
+          "401": {
+            "description": "Yetkiniz yok"
+          },
+          "405": {
+            "description": "Geçersiz method"
+          }
+        }
+      }
+    },
+    "/register": {
+      "post": {
+        "tags": ["user"],
+        "summary": "Üye olmak için kullanılan api methodu",
+        "description": "Üyelik",
+        "operationId": "register",
+        "requestBody": {
+          "description": "Yeni istek",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/register_request"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "Başarılı istek",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/register_responses"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bir hata ile karşılaşıldı"
+          },
+          "401": {
+            "description": "Yetkiniz yok"
+          },
+          "405": {
+            "description": "Geçersiz method"
+          }
+        }
+      }
+    },
+    "/profile": {
+      "get": {
+        "tags": ["user"],
+        "summary": "Profil bilgilerini almak için kullanılan api methodu",
+        "description": "Profil bilgilerini almak için kullanılan api methodu",
+        "operationId": "profile",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Başarılı istek",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/get_data_responses"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bir hata ile karşılaşıldı"
+          },
+          "401": {
+            "description": "Yetkiniz yok"
+          },
+          "405": {
+            "description": "Geçersiz method"
+          }
+        }
+      }
+    },
+    "/auths": {
+      "get": {
+        "tags": ["user"],
+        "summary": "Yetki bilgilerini almak için kullanılan api methodu",
+        "description": "Yetki bilgilerini almak için kullanılan api methodu",
+        "operationId": "auths",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Başarılı istek",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/get_data_responses"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bir hata ile karşılaşıldı"
+          },
+          "401": {
+            "description": "Yetkiniz yok"
+          },
+          "405": {
+            "description": "Geçersiz method"
+          }
+        }
+      }
+    },
+    "/token-control": {
+      "get": {
+        "tags": ["user"],
+        "summary": "Kullanıcının token'ı geçerli olup olmadığını kontrol etmek için atılan istek",
+        "description": "Kullanıcının token'ı geçerli olup olmadığını kontrol etmek için atılan istek",
+        "operationId": "token-control",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Başarılı istek"
+          },
+          "400": {
+            "description": "Bir hata ile karşılaşıldı"
+          },
+          "401": {
+            "description": "Yetkiniz yok"
+          },
+          "405": {
+            "description": "Geçersiz method"
+          }
+        }
+      }
+    },
+    "/new-password": {
+      "post": {
+        "tags": ["password"],
+        "summary": "Şifre güncellemek için kullanılan method",
+        "description": "Şifre güncellemek için kullanılan method",
+        "operationId": "new-password",
+        "requestBody": {
+          "description": "Yeni istek",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/new-password_request"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "Başarılı istek",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/new-password_responses"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bir hata ile karşılaşıldı"
+          },
+          "401": {
+            "description": "Yetkiniz yok"
+          },
+          "405": {
+            "description": "Geçersiz method"
+          }
+        }
+      }
+    },
+    "/forget": {
+      "post": {
+        "tags": ["password"],
+        "summary": "Şifremi unuttum maili göndermek için kullanılan method",
+        "description": "Şifremi unuttum maili göndermek için kullanılan method",
+        "operationId": "forget",
+        "requestBody": {
+          "description": "Yeni istek",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/forget_request"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "Başarılı istek",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forget_responses"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bir hata ile karşılaşıldı"
+          },
+          "401": {
+            "description": "Yetkiniz yok"
+          },
+          "405": {
+            "description": "Geçersiz method"
+          }
+        }
+      }
+    },
+    "/forget-password/": {
+      "post": {
+        "tags": ["password"],
+        "summary": "Şifremi unuttum maili gönderildek sonra doğrulama ve yeni şifre belirlemek için kullanılan method",
+        "description": "Şifremi unuttum maili gönderildek sonra doğrulama ve yeni şifre belirlemek için kullanılan method",
+        "operationId": "forget-password",
+        "requestBody": {
+          "description": "Yeni istek",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/forget_password_request"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "Başarılı istek",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forget_password_responses"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bir hata ile karşılaşıldı"
+          },
+          "401": {
+            "description": "Yetkiniz yok"
+          },
+          "405": {
+            "description": "Geçersiz method"
+          }
+        }
+      }
+    },
+    "/get-auths/{table_name}/{auths_group_id}": {
+      "get": {
+        "tags": ["admin"],
+        "summary": "admin",
+        "description": "admin",
+        "operationId": "get-auths",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "table_name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tablo ismi"
+          },
+          {
+            "in": "path",
+            "name": "auths_group_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Yetki grubu ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Başarılı istek",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/get_auths_responses"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bir hata ile karşılaşıldı"
+          },
+          "401": {
+            "description": "Yetkiniz yok"
+          },
+          "405": {
+            "description": "Geçersiz method"
+          }
+        }
+      }
+    },
+    "/set-auths/{table_name}/{auths_group_id}": {
+      "post": {
+        "tags": ["admin"],
+        "summary": "admin",
+        "description": "admin",
+        "operationId": "set-auths",
+        "requestBody": {
+          "description": "Yeni istek",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/set_auths_request"
+              }
+            }
+          },
+          "required": true
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "table_name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tablo ismi"
+          },
+          {
+            "in": "path",
+            "name": "auths_group_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Yetki grubu ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Başarılı istek",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/set_auths_responses"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bir hata ile karşılaşıldı"
+          },
+          "401": {
+            "description": "Yetkiniz yok"
+          },
+          "405": {
+            "description": "Geçersiz method"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "tables_request": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "type": "object",
+            "description": "Filtrelenmek istenen verilerde tam eşitlik alınarak liste oluşur",
+            "example": {
+              "id": 1
+            }
+          },
+          "like": {
+            "type": "object",
+            "description": "Filtrelenmek istenen verilerde benzeri alınarak liste oluşur",
+            "example": {
+              "name": "test"
+            }
+          },
+          "order": {
+            "type": "object",
+            "description": "Verilerin hangi kolona göre hangi liste ile gelmeli",
+            "example": {
+              "name": "id",
+              "type": "DESC"
+            }
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Kaç adet veri gelmesini istiyorsunuz",
+            "example": 10
+          },
+          "page": {
+            "type": "integer",
+            "description": "Kaçıncı sayfadaki veriyi istiyorsunuz",
+            "example": 1
+          }
+        }
+      },
+      "tables_responses": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "Filtrelenmek istenen verilerde tam eşitlik alınarak liste oluşur",
+            "example": [{}],
+            "items": {
+              "type": "object"
+            }
+          },
+          "columns": {
+            "type": "object",
+            "description": "Gelen verilerin kolon özellikleri",
+            "example": {}
+          },
+          "page": {
+            "type": "integer",
+            "example": 1,
+            "description": "Gelen verilen kaçıncı sayfada olduğunun bilgisini verir"
+          },
+          "count": {
+            "type": "integer",
+            "example": 1,
+            "description": "Bu istekte toplam kaç adet veri göreceğinizin sayısı"
+          },
+          "status": {
+            "type": "string",
+            "example": "success",
+            "description": "İstek durumu",
+            "enum": ["success", "error"]
+          }
+        }
+      },
+      "get_data_responses": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "description": "İstenilen veri",
+            "example": {},
+            "items": {
+              "type": "object"
+            }
+          },
+          "columns": {
+            "type": "object",
+            "description": "Gelen verilerin kolon özellikleri",
+            "example": {}
+          },
+          "status": {
+            "type": "string",
+            "example": "success",
+            "description": "İstek durumu",
+            "enum": ["success", "error"]
+          }
+        }
+      },
+      "create_data_responses": {
+        "type": "object",
+        "properties": {
+          "columns": {
+            "type": "object",
+            "description": "Eklenecek kolonlar object olarak geri döner",
+            "example": {}
+          },
+          "status": {
+            "type": "string",
+            "example": "success",
+            "description": "İstek durumu",
+            "enum": ["success", "error"]
+          }
+        }
+      },
+      "count_responses": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "integer",
+            "description": "Toplam veri",
+            "example": 1
+          },
+          "status": {
+            "type": "string",
+            "example": "success",
+            "description": "İstek durumu",
+            "enum": ["success", "error"]
+          }
+        }
+      },
+      "store_request": {
+        "type": "object",
+        "example": {
+          "title": "swagger test"
+        },
+        "description": "key kısmı kolon ismi val kısmı ise değeriniz olacak şekilde oluşturulan json"
+      },
+      "store_responses": {
+        "type": "object",
+        "properties": {
+          "last": {
+            "type": "object",
+            "description": "Eklenen veriler",
+            "example": {}
+          },
+          "status": {
+            "type": "string",
+            "example": "success",
+            "description": "İstek durumu",
+            "enum": ["success", "error"]
+          }
+        }
+      },
+      "edit_data_responses": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "description": "Düzenlenecek veriler object olarak geri döner",
+            "example": {}
+          },
+          "columns": {
+            "type": "object",
+            "description": "Düzenlenecek kolonlar object olarak geri döner",
+            "example": {}
+          },
+          "status": {
+            "type": "string",
+            "example": "success",
+            "description": "İstek durumu",
+            "enum": ["success", "error"]
+          }
+        }
+      },
+      "update_request": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "description": "Güncellenen verinin yeni hali",
+            "example": {}
+          },
+          "updated": {
+            "type": "object",
+            "description": "Değişen kolonlar",
+            "example": {}
+          },
+          "status": {
+            "type": "string",
+            "example": "success",
+            "description": "İstek durumu",
+            "enum": ["success", "error"]
+          }
+        }
+      },
+      "delete_responses": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success",
+            "description": "İstek durumu",
+            "enum": ["success", "error"]
+          }
+        }
+      },
+      "login_request": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "e@admin.com",
+            "description": "eposta adresi"
+          },
+          "password": {
+            "type": "string",
+            "example": "Erdo112233.",
+            "description": "Şifre"
+          }
+        }
+      },
+      "login_responses": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "f32f234f234f245gf245f",
+            "description": "Token bilgisi"
+          },
+          "message": {
+            "type": "string",
+            "example": "Kullanıcı bulundu.",
+            "description": "İşlem mesajı"
+          },
+          "status": {
+            "type": "string",
+            "example": "success",
+            "description": "İstek durumu",
+            "enum": ["success", "error"]
+          }
+        }
+      },
+      "register_request": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "asd@asd.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "123asd123"
+          },
+          "name": {
+            "type": "string",
+            "example": "Erdoğan"
+          },
+          "surname": {
+            "type": "string",
+            "example": "Yeşil"
+          },
+          "phone": {
+            "type": "string",
+            "example": 45459394994594
+          }
+        }
+      },
+      "register_responses": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Kayıt Başarılı.",
+            "description": "İşlem mesajı"
+          },
+          "status": {
+            "type": "string",
+            "example": "success",
+            "description": "İstek durumu",
+            "enum": ["success", "error"]
+          }
+        }
+      },
+      "new-password_request": {
+        "type": "object",
+        "properties": {
+          "new_pass": {
+            "type": "string",
+            "example": 123,
+            "description": "İşlem mesajı"
+          },
+          "old_pass": {
+            "type": "string",
+            "example": "A1B2C3D4.*",
+            "description": "İşlem mesajı"
+          }
+        }
+      },
+      "new-password_responses": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Kayıt Başarılı.",
+            "description": "İşlem mesajı"
+          },
+          "status": {
+            "type": "string",
+            "example": "success",
+            "description": "İstek durumu",
+            "enum": ["success", "error"]
+          }
+        }
+      },
+      "forget_request": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "asd@asd.com",
+            "description": "Eposta adresi"
+          }
+        }
+      },
+      "forget_responses": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Eposta başarıyla gönderildi.",
+            "description": "İşlem mesajı"
+          },
+          "status": {
+            "type": "string",
+            "example": "success",
+            "description": "İstek durumu",
+            "enum": ["success", "error"]
+          }
+        }
+      },
+      "forget_password_request": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "asd@asd.com",
+            "description": "Eposta adresi"
+          },
+          "pin": {
+            "type": "string",
+            "example": 123456,
+            "description": "Maile gönderilmiş olan pin kodu"
+          },
+          "password": {
+            "type": "string",
+            "example": "A1B2C3.*",
+            "description": "Kullanıcının yeni şifresi"
+          }
+        }
+      },
+      "forget_password_responses": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Şifre başarıyla değiştirildi",
+            "description": "İşlem mesajı"
+          },
+          "status": {
+            "type": "string",
+            "example": "success",
+            "description": "İstek durumu",
+            "enum": ["success", "error"]
+          }
+        }
+      },
+      "set_auths_request": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Kullanıcılar tablosu admin yetki grubu",
+            "description": "Yetki ismi"
+          },
+          "table_name": {
+            "type": "string",
+            "example": "users",
+            "description": "Yetkilendirilecek tablo ismi"
+          },
+          "auths_group_id": {
+            "type": "string",
+            "example": 4,
+            "description": "Yetkilendirilecek grup id"
+          },
+          "list_access": {
+            "type": "boolean",
+            "example": true,
+            "description": "Listeleme yetkisi olsun mu"
+          },
+          "create_access": {
+            "type": "boolean",
+            "example": true,
+            "description": "Listeleme yetkisi olsun mu"
+          },
+          "edit_access": {
+            "type": "boolean",
+            "example": true,
+            "description": "Listeleme yetkisi olsun mu"
+          },
+          "delete_access": {
+            "type": "boolean",
+            "example": true,
+            "description": "Listeleme yetkisi olsun mu"
+          },
+          "columns": {
+            "type": "object",
+            "example": [{}],
+            "description": "Yetkileri hazırlanmış kolonlar"
+          }
+        }
+      },
+      "set_auths_responses": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Kayıt Başarılı.",
+            "description": "İşlem mesajı"
+          },
+          "status": {
+            "type": "string",
+            "example": "success",
+            "description": "İstek durumu",
+            "enum": ["success", "error"]
+          }
+        }
+      },
+      "get_auths_responses": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string",
+            "example": {},
+            "description": "Yetki verisi"
+          },
+          "columns": {
+            "type": "object",
+            "example": [{}],
+            "description": "Yetkileri hazırlanmış kolonlar"
+          },
+          "status": {
+            "type": "string",
+            "example": "success",
+            "description": "İstek durumu",
+            "enum": ["success", "error"]
+          }
+        }
+      }
+    }
+  }
+}
