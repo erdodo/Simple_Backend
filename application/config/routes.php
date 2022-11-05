@@ -34,6 +34,8 @@ $route['api/tables/(:any)/(:any)/get'] = 'Tables/get/$1/$2';
 
 $route['api/tables/(:any)/count'] = 'Tables/count/$1';
 
+$route['api/file-upload/(:any)'] = 'Tables/image_upload/$1';
+
 $route['api/tables/(:any)/create'] = 'Tables/create/$1';
 $route['api/tables/(:any)/store'] = 'Tables/store/$1';
 

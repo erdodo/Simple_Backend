@@ -39,6 +39,11 @@ class Tables extends CI_Controller
 		$limit = $body->limit ?? 10;
 		$page = $body->page ?? 1;
 
+
+		if ($auths['auths']->own_data == "1") {
+			$filter['own_id'] = $auths['user']->id;
+		}
+
 		//veritabanından veri çekme
 		$datas = $this->table_model->get_all($filter, $order, $limit, $page, $like);
 
@@ -75,6 +80,7 @@ class Tables extends CI_Controller
 			"columns" => $columns,
 			"page" => $page,
 			"count" => $count,
+			'auths' => $auths,
 			"status" => "success"
 		];
 
@@ -97,6 +103,19 @@ class Tables extends CI_Controller
 
 		return $datas;
 	}
+	public function list($table_name, $column)
+	{
+		$this->table_model->tableName = $table_name;
+		$datas = $this->table_model->get_all([], [], 1000);
+		$newData = [];
+		foreach ($datas as $key => $value) {
+			$newData[$key] = [
+				'id' => $value->id,
+				'label' => $value->$column
+			];
+		}
+		return $newData;
+	}
 	public function get($table_name, $id)
 	{
 		if ($this->input->method() == 'options') {
@@ -118,15 +137,23 @@ class Tables extends CI_Controller
 
 		$datas = $this->table_model->get(array("id" => $id));
 		//kolonları çekme
-		if ($auths['auths_group_id'] == 0) {
-			$columns = $this->table_model->columns($table_name);
-		} else {
-			$columns = $this->auths_column($auths, 'get');
-		}
+
+		$columns = $this->auths_column($auths, 'get');
+
 		$newData = (object) [];
 
-		foreach ($columns as $key => $value) {
-			$newData->$key =  $datas->$key;
+
+		foreach ($columns as $key1 => $value1) {
+			if ($value1['key'] == 'MUL' && !empty($value1['table_name'])) {
+				$mul_data = (array) $this->get_in($value1['table_name'], $datas->$key1);
+				$newData->$key1 = [
+					'id' => $datas->$key1,
+					'data' => $mul_data[$value1['table_column']],
+				];
+			} else {
+				$newData->$key1 =
+					$datas->$key1;
+			}
 		}
 
 		$data = [
@@ -271,11 +298,16 @@ class Tables extends CI_Controller
 		$this->load->model('table_model');
 
 		//kolonları çekme
-		if ($auths['auths_group_id'] == 0) {
-			$columns = $this->table_model->columns($table_name);
-		} else {
-			$columns = $this->auths_column($auths, 'create');
+		$columns = $this->auths_column($auths, 'create');
+
+
+		foreach ($columns as $key => $value) {
+			if ($value['key'] == 'MUL' && !empty($value['table_name'])) {
+				$columns[$key]['list'] =
+					(array) $this->list($value['table_name'], $value['table_column']);
+			}
 		}
+
 		$data = [
 			"columns" => $columns,
 			"status" => "success"
@@ -374,7 +406,7 @@ class Tables extends CI_Controller
 			die();
 		}
 		//Silme yetki kontrolü 
-		$auths = $this->auths($table_name, '4');
+		$auths = $this->auths($table_name, 'delete');
 
 		$this->load->model('table_model');
 
@@ -420,13 +452,20 @@ class Tables extends CI_Controller
 		$this->table_model->tableName = $table_name;
 
 		//kolonları çekme
-		if ($auths['auths_group_id'] == 0) {
-			$columns = $this->table_model->columns($table_name);
-		} else {
-			$columns = $this->auths_column($auths, 'edit');
+
+		$columns = $this->auths_column($auths, 'edit');
+		$datas = $this->table_model->get(array("id" => $id));
+		$newData = (array)[];
+		foreach ($columns as $key => $value) {
+			$newData[$key] =
+				$datas->$key;
+			if ($value['key'] == 'MUL' && !empty($value['table_name'])) {
+				$columns[$key]['list'] =
+					(array) $this->list($value['table_name'], $value['table_column']);
+			}
 		}
 		$data = [
-			"data" => $this->table_model->get(array("id" => $id)),
+			"data" => $newData,
 			"columns" => $columns,
 			"status" => "success"
 		];
@@ -657,6 +696,39 @@ class Tables extends CI_Controller
 					$filename = pathinfo($image_uploaded['full_path']);
 
 					return $filename['basename'];
+				}
+			} else {
+
+				return false;
+			}
+		}
+	}
+	public function image_upload($filename)
+	{
+		if ($this->input->method()) {
+			if ($_FILES) {
+				$config['upload_path'] = './uploads/';
+				$config['allowed_types'] = '*';
+				$config['max_size'] = '0';
+				$config['max_filename'] = '255';
+				$config['encrypt_name'] = TRUE;
+
+				$this->load->library('upload', $config);
+
+				if (file_exists($config['upload_path'] . $_FILES[$filename]['name'])) {
+					echo ('File already exists => ' . $config['upload_path'] . $_FILES[$filename]['name']);
+					return;
+				} else {
+					if (!file_exists($config['upload_path'])) {
+						mkdir($config['upload_path'], 0777, true);
+					}
+					$this->upload->do_upload($filename);
+					$image_uploaded = $this->upload->data();
+
+					echo json_encode($image_uploaded);
+					//$filename = pathinfo($image_uploaded['full_path']);
+
+					//return $filename['basename'];
 				}
 			} else {
 

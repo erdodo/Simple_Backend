@@ -107,16 +107,32 @@ class Login extends CI_Controller
         $_Header = $this->input->request_headers();
         $token = $_Header['token'] ?? $_Header['Token'];
 
+
         header('Content-Type: application/json');
-        if (empty($token) || $token == 'null') {
+        if ((empty($token) || $token == 'null') && $token != 0) {
             echo json_encode(['status' => 'error', 'message' => 'Kullanıcı bulunamadı.']);
             $this->output->set_status_header(400);
             die();
         } else {
-            $user = $this->table_model->get(['token' => $token]);
-            $user->password = '';
-            if ($user) {
-                echo json_encode(['status' => 'success', 'message' => 'Kullanıcı bulundu.', 'data' => $user]);
+            $datas = $this->table_model->get(['token' => $token]);
+            $columns = (array) $this->table_model->columns('users');
+            unset($columns['password']);
+            unset($columns['token']);
+            unset($columns['id']);
+            unset($columns['added_date']);
+            unset($columns['forget']);
+            unset($columns['own_id']);
+            unset($columns['settings']);
+            unset($columns['status']);
+            unset($columns['updated_date']);
+            unset($columns['user_id']);
+            $newData = (object) [];
+
+            foreach ($columns as $key => $value) {
+                $newData->$key =  $datas->$key;
+            }
+            if ($newData) {
+                echo json_encode(['status' => 'success', 'message' => 'Kullanıcı bulundu.', 'data' => $newData, 'columns' => $columns]);
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Kullanıcı bulunamadı.']);
                 $this->output->set_status_header(400);
