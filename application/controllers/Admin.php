@@ -24,6 +24,7 @@ class Admin extends CI_Controller
         $this->table_model->tableName = 'auths';
         $datas = $this->table_model->get(array("table_name" => $table_name, 'auths_group_id' => $auths_group_id));
         $columns = $this->table_model->columns($table_name);
+        $auths_column = $this->table_model->columns('auths');
         if ($datas != null) {
             foreach ($columns as $key => $value) {
                 $columns[$key]['list_hide'] = strpos($datas->list_hide, $key) != false;
@@ -34,7 +35,8 @@ class Admin extends CI_Controller
         }
         $data = [
             "data" => $datas,
-            "columns" => $columns,
+            'columns' => $auths_column,
+            "table_columns" => $columns,
             "status" => "success"
         ];
 
@@ -133,6 +135,47 @@ class Admin extends CI_Controller
                 $this->output->set_status_header(400);
                 die();
             }
+        }
+    }
+    public function getTableList()
+    {
+        $this->load->model('admin_model');
+        $data = $this->admin_model->tables();
+
+
+        header('Content-Type: application/json');
+        $this->output
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode($data))
+            ->_display();
+        die();
+    }
+    public function addColumn($table_name)
+    {
+
+        $input = (array) json_decode($this->input->raw_input_stream);
+
+        $this->load->dbforge();
+        $example = array(
+            $input['name'] => array(
+                'type' => $input['type'],
+                'constraint' => $input['constraint'],
+                'unsigned' => $input['unsigned'],
+                'auto_increment' => $input['auto_increment'],
+                'unique' => $input['unique'],
+                'default' => $input['default'],
+                'comment' => $input['comment'],
+            ),
+        );
+        $state = $this->dbforge->add_column($table_name, $example);
+        if ($state) {
+            $this->output->set_status_header(200);
+            $this->output->set_content_type('application/json', 'utf-8')
+                ->set_output(json_encode(['status' => 'success']))
+                ->_display();
+            die();
+        } else {
+            $this->output->set_status_header(400);
         }
     }
 }

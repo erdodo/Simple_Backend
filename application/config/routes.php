@@ -25,6 +25,7 @@ $route['api/md5'] = 'Login/md5';
 $route['api/get-auths/(:any)/(:any)'] = 'Admin/getAuthsData/$1/$2';
 $route['api/set-auths/(:any)/(:any)'] = 'Admin/setAuthsData/$1/$2';
 
+$route['api/add-column/(:any)'] = 'Admin/addColumn/$1';
 
 //Tables
 $route['api/tables/(:any)'] = 'Tables/index/$1';
@@ -34,7 +35,7 @@ $route['api/tables/(:any)/(:any)/get'] = 'Tables/get/$1/$2';
 
 $route['api/tables/(:any)/count'] = 'Tables/count/$1';
 
-$route['api/file-upload/(:any)'] = 'Tables/image_upload/$1';
+$route['api/file-upload/(:any)'] = 'Tables/image_upload/$1'; //REVIEW - Swaggera eklenecek
 
 $route['api/tables/(:any)/create'] = 'Tables/create/$1';
 $route['api/tables/(:any)/store'] = 'Tables/store/$1';

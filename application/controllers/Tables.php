@@ -1,9 +1,11 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+include_once(__DIR__ . '/Admin.php');
 class Tables extends CI_Controller
 {
 	public $simple = 'fungitu2_Simple';
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -322,6 +324,7 @@ class Tables extends CI_Controller
 	}
 	public function store($table_name)
 	{
+
 		if ($this->input->method() == 'options') {
 			$this->output->set_content_type('application/json', 'utf-8')
 				->set_output('put')
@@ -334,6 +337,7 @@ class Tables extends CI_Controller
 		}
 		//Ekleme yetki kontrolü 
 		$auths = $this->auths($table_name, 'create');
+
 
 
 		$this->load->model('table_model');
@@ -356,30 +360,63 @@ class Tables extends CI_Controller
 		}
 
 		foreach ($columns as $key => $value) {
-			if ($value['type'] == 'file') {
-				$input[$value['name']] = $this->file_upload($value['name']);
+			if ($key == 'password') {
+				if (!empty($value)) {
+					$parse = md5($input[$key]);
+					$input[$key] = $parse;
+				}
 			}
 		}
 
-
-
+		$input['status'] = 1;
 		$input['own_id'] = $auths['user']->id;
 		$input['user_id'] = $auths['user']->id;
 		$input['added_date'] = date("Y-m-d H:i:s");
 		$input['updated_date'] = date("Y-m-d H:i:s");
 
 
-		$ret = $this->table_model->add($input);
+		$ret = $this->table_model->add($input, $table_name);
 
+
+		if ($ret && $table_name == 'mail') {
+			$data['mail_status'] = $this->email_send($input['users'], $input['title'], $input['message']);
+		}
+		if ($ret && $table_name == 'tables') {
+
+			$this->load->model('admin_model');
+			$state = 1;
+			$state = $this->admin_model->createTable([
+				'name' => $input['name'],
+				'display' => $input['display']
+			]);
+			$data = [
+				'name' => $input['name'] . ' -> admin',
+				'table_name' => $input['name'],
+				'auths_group_id' => "1",
+				'own_data' => 0,
+				'list_access' => 1,
+				'create_access' => 1,
+				'edit_access' => 1,
+				'delete_access' => 1,
+				'list_hide' => '',
+				'create_hide' => 'id,own_id,user_id,added_date,updated_date',
+				'edit_hide' => 'id,own_id,user_id,added_date,updated_date',
+				'status' => 1,
+				'own_id' => $auths['user']->id,
+				'user_id' => $auths['user']->id,
+				'added_date' => date("Y-m-d H:i:s"),
+				'updated_date' => date("Y-m-d H:i:s")
+			];
+
+			$this->table_model->__set('tableName', 'auths');
+			$data['table_status'] = $this->table_model->add($data, 'auths');
+		}
 
 		$data = [
 			"status" => $ret ? "success" : "error",
 			"last" => $this->table_model->last($table_name),
 			"table_name" => $table_name
 		];
-		if ($ret && $table_name == 'mail') {
-			$data['mail_status'] = $this->email_send($input['users'], $input['title'], $input['message']);
-		}
 		if ($ret) {
 			header('Content-Type: application/json');
 			$this->output
@@ -415,7 +452,16 @@ class Tables extends CI_Controller
 
 		$where = ['id' => $id];
 
-		$ret = $this->table_model->delete($where);
+		if ($table_name == 'tables') {
+			$this->table_model->tableName = 'tables';
+			$old_data = $this->table_model->get(array("id" => $id));
+
+			$this->load->model('admin_model');
+			$this->admin_model->deleteTable($old_data->name);
+		}
+
+		//$ret = $this->table_model->delete($where);
+		$ret = $this->table_model->update($where, ['status' => 0]);
 		$data = [
 			"status" => $ret ? "success" : "error",
 		];
@@ -496,7 +542,7 @@ class Tables extends CI_Controller
 
 		$this->load->model('table_model');
 
-		$this->table_model->tableName = $table_name;
+
 
 		$post = $this->input->post();
 		$get = (array) json_decode($this->input->raw_input_stream);
@@ -510,19 +556,11 @@ class Tables extends CI_Controller
 		$input['updated_date'] = date("Y-m-d H:i:s");
 
 		foreach ($columns as $key => $value) {
-			if ($value['type'] == 'file') {
-
-				$state = $this->file_upload($value['name']);
-
-				if ($state != false) {
-					$input[$value['name']] = $state;
-				} else {
-				}
-			}
 			if ($key == 'password') {
-				$parse = md5($input[$key]);
-
-				$input[$key] = $parse;
+				if (!empty($input[$key])) {
+					$parse = md5($input[$key]);
+					$input[$key] = $parse;
+				}
 			}
 		}
 
@@ -537,6 +575,26 @@ class Tables extends CI_Controller
 
 
 
+
+
+
+		if ($table_name == 'tables') {
+			$this->table_model->tableName = 'tables';
+			$old_data = $this->table_model->get(array("id" => $id));
+
+			$this->load->model('admin_model');
+			if (empty($input['name'])) {
+				$input['name'] = $old_data['name'];
+			}
+			$state = 1;
+			$state = $this->admin_model->updateTable([
+				'old_name' => $old_data->name,
+				'old_display' => $old_data->display,
+				'name' => $input['name'],
+				'display' => $input['display']
+			]);
+		}
+		$this->table_model->tableName = $table_name;
 		$ret = $this->table_model->update($where, $input);
 
 		$data = [
@@ -742,9 +800,9 @@ class Tables extends CI_Controller
 
 		$config = array();
 		$config['protocol'] = 'smtp';
-		$config['smtp_host'] = 'mail.fungiturkey.org';
-		$config['smtp_user'] = 'info@fungiturkey.org';
-		$config['smtp_pass'] = 'fungiturkey34';
+		$config['smtp_host'] = '';
+		$config['smtp_user'] = '';
+		$config['smtp_pass'] = '';
 		$config['smtp_port'] = 465;
 		$config['smtp_crypto'] = "ssl";
 		$config['charset'] = "UTF-8";
@@ -755,10 +813,10 @@ class Tables extends CI_Controller
 		$this->email->initialize($config);
 		$this->email->set_newline("\r\n");
 
-		$this->email->from('info@fungiturkey.org', 'Fungi Turkey');
+		$this->email->from('', '');
 		$this->email->to($email);
-		$this->email->cc('mail@fungiturkey.org');
-		$this->email->bcc('iletisim@fungiturkey.org');
+		$this->email->cc('');
+		$this->email->bcc('');
 		//$this->email->priority(3);
 
 		$this->email->subject($title);

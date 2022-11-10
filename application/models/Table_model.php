@@ -2,9 +2,16 @@
 
 class Table_model extends CI_Model
 {
-    public $tableName = "";
+    public string $tableName;
 
-
+    public function __set($name, $value)
+    {
+        if (isset($this->{$name})) {
+            $this->{$name} = $value;
+        } else {
+            $this->properties[$name] = new self($value, null);
+        }
+    }
     public function __construct()
     {
         parent::__construct();
@@ -12,6 +19,7 @@ class Table_model extends CI_Model
 
     public function get($where = array())
     {
+        $this->db->where('status', 1);
         return $this->db->where($where)->get($this->tableName)->row();
     }
 
@@ -24,16 +32,18 @@ class Table_model extends CI_Model
         foreach ($like as $key => $value) {
             $this->db->like($key, $value);
         }
-
+        $this->db->where('status', 1);
 
         return $this->db
             ->order_by($order)
             ->limit($limit, $limit * ($page - 1))
             ->get($this->tableName)->result();
     }
-    public function add($data = array())
+    public function add($data = array(), $tbname)
     {
+
         return $this->db->insert($this->tableName, $data);
+        $this->db->close();
     }
 
     public function update($where = array(), $data = array())

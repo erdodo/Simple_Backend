@@ -319,9 +319,9 @@ class Login extends CI_Controller
 
         $config = array();
         $config['protocol'] = 'smtp';
-        $config['smtp_host'] = 'mail.fungiturkey.org';
-        $config['smtp_user'] = 'info@fungiturkey.org';
-        $config['smtp_pass'] = 'fungiturkey34';
+        $config['smtp_host'] = '';
+        $config['smtp_user'] = '';
+        $config['smtp_pass'] = '';
         $config['smtp_port'] = 465;
         $config['smtp_crypto'] = "ssl";
         $config['charset'] = "UTF-8";
@@ -332,10 +332,10 @@ class Login extends CI_Controller
         $this->email->initialize($config);
         $this->email->set_newline("\r\n");
 
-        $this->email->from('info@fungiturkey.org', 'Fungi Turkey');
+        $this->email->from('', '');
         $this->email->to($email);
-        $this->email->cc('mail@fungiturkey.org');
-        $this->email->bcc('iletisim@fungiturkey.org');
+        $this->email->cc('');
+        $this->email->bcc('');
         //$this->email->priority(3);
 
         $this->email->subject($title);
