@@ -118,7 +118,7 @@ class Login extends CI_Controller
             $columns = (array) $this->table_model->columns('users');
             unset($columns['password']);
             unset($columns['token']);
-            unset($columns['id']);
+
             unset($columns['added_date']);
             unset($columns['forget']);
             unset($columns['own_id']);
@@ -319,9 +319,9 @@ class Login extends CI_Controller
 
         $config = array();
         $config['protocol'] = 'smtp';
-        $config['smtp_host'] = '';
-        $config['smtp_user'] = '';
-        $config['smtp_pass'] = '';
+        $config['smtp_host'] = 'smtp.googlemail.com';
+        $config['smtp_user'] = 'erdoganyesil3@gmail.com';
+        $config['smtp_pass'] = 'Erdo030421.';
         $config['smtp_port'] = 465;
         $config['smtp_crypto'] = "ssl";
         $config['charset'] = "UTF-8";

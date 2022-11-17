@@ -44,3 +44,6 @@ $route['api/tables/(:any)/(:any)/edit'] = 'Tables/edit/$1/$2';
 $route['api/tables/(:any)/(:any)/update'] = 'Tables/update/$1/$2';
 
 $route['api/tables/(:any)/(:any)/delete'] = 'Tables/delete/$1/$2';
+
+$route['api/odeme'] = 'Iyzico/odeme';
+$route['api/get_odeme'] = 'Iyzico/get_odeme';

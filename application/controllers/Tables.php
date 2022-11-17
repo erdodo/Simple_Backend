@@ -46,6 +46,7 @@ class Tables extends CI_Controller
 			$filter['own_id'] = $auths['user']->id;
 		}
 
+
 		//veritabanından veri çekme
 		$datas = $this->table_model->get_all($filter, $order, $limit, $page, $like);
 
@@ -75,7 +76,9 @@ class Tables extends CI_Controller
 
 
 
+		$this->table_model->tableName = $table_name;
 		$count = $this->table_model->count($filter, $like);
+
 		//kullanılabilir json yapısı kurma
 		$data = [
 			"data" => $newData,
@@ -398,9 +401,10 @@ class Tables extends CI_Controller
 				'create_access' => 1,
 				'edit_access' => 1,
 				'delete_access' => 1,
-				'list_hide' => '',
-				'create_hide' => 'id,own_id,user_id,added_date,updated_date',
-				'edit_hide' => 'id,own_id,user_id,added_date,updated_date',
+				'list_hide' => 'status',
+				'get_hide' => 'status',
+				'create_hide' => 'id,own_id,user_id,added_date,status,updated_date,status',
+				'edit_hide' => 'id,own_id,user_id,added_date,status,updated_date,status',
 				'status' => 1,
 				'own_id' => $auths['user']->id,
 				'user_id' => $auths['user']->id,
@@ -447,7 +451,7 @@ class Tables extends CI_Controller
 
 		$this->load->model('table_model');
 
-		$this->table_model->tableName = $table_name;
+
 
 
 		$where = ['id' => $id];
@@ -455,12 +459,15 @@ class Tables extends CI_Controller
 		if ($table_name == 'tables') {
 			$this->table_model->tableName = 'tables';
 			$old_data = $this->table_model->get(array("id" => $id));
-
+			$this->table_model->tableName = 'auths';
+			$this->table_model->delete(array("table_name" => $old_data->name));
 			$this->load->model('admin_model');
 			$this->admin_model->deleteTable($old_data->name);
+			$this->table_model->delete($where);
 		}
 
 		//$ret = $this->table_model->delete($where);
+		$this->table_model->tableName = $table_name;
 		$ret = $this->table_model->update($where, ['status' => 0]);
 		$data = [
 			"status" => $ret ? "success" : "error",
@@ -798,29 +805,27 @@ class Tables extends CI_Controller
 	{
 		$this->load->library('email');
 
-		$config = array();
-		$config['protocol'] = 'smtp';
-		$config['smtp_host'] = '';
-		$config['smtp_user'] = '';
-		$config['smtp_pass'] = '';
-		$config['smtp_port'] = 465;
-		$config['smtp_crypto'] = "ssl";
-		$config['charset'] = "UTF-8";
-		$config['wordwrap'] = TRUE;
-		$config['mailtype'] = 'html';
-
+		$config['protocol']    = 'smtp';
+		$config['smtp_host']    = 'ssl://smtp.gmail.com';
+		$config['smtp_port']    = '465';
+		$config['smtp_timeout'] = '7';
+		$config['smtp_user']    = 'erdoganyesil3@gmail.com';
+		$config['smtp_pass']    = 'Erdo030421.';
+		$config['charset']    = 'utf-8';
+		$config['newline']    = "\r\n";
+		$config['mailtype'] = 'text'; // or html
+		$config['validation'] = TRUE; // bool whether to validate email or not      
 
 		$this->email->initialize($config);
-		$this->email->set_newline("\r\n");
 
-		$this->email->from('', '');
-		$this->email->to($email);
-		$this->email->cc('');
-		$this->email->bcc('');
-		//$this->email->priority(3);
+		$this->email->from('mygmail@gmail.com', 'myname');
+		$this->email->to('target@gmail.com');
 
-		$this->email->subject($title);
-		$this->email->message($message);
+		$this->email->subject('Email Test');
+		$this->email->message('Testing the email class.');
+
+
+
 
 
 		if ($this->email->send()) {
@@ -828,6 +833,7 @@ class Tables extends CI_Controller
 		} else {
 			show_error($this->email->print_debugger());
 		}
+		echo $this->email->print_debugger();
 	}
 	public function getDogrulama()
 	{

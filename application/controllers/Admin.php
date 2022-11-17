@@ -23,7 +23,10 @@ class Admin extends CI_Controller
         $this->load->model('table_model');
         $this->table_model->tableName = 'auths';
         $datas = $this->table_model->get(array("table_name" => $table_name, 'auths_group_id' => $auths_group_id));
+
         $columns = $this->table_model->columns($table_name);
+
+
         $auths_column = $this->table_model->columns('auths');
         if ($datas != null) {
             foreach ($columns as $key => $value) {
@@ -33,6 +36,21 @@ class Admin extends CI_Controller
                 $columns[$key]['edit_hide'] = strpos($datas->edit_hide, $key) > 0;
             }
         }
+        foreach ($auths_column as $key => $value) {
+
+            if ($value['key'] == 'MUL' && !empty($value['table_name'])) {
+
+                $auths_column[$key]['list'] =
+                    (array) $this->list($value['table_name'], $value['table_column']);
+            }
+        }
+        unset($auths_column['id']);
+        unset($auths_column['own_id']);
+        unset($auths_column['user_id']);
+        unset($auths_column['status']);
+        unset($auths_column['added_date']);
+        unset($auths_column['updated_date']);
+
         $data = [
             "data" => $datas,
             'columns' => $auths_column,
@@ -165,6 +183,7 @@ class Admin extends CI_Controller
                 'unique' => $input['unique'],
                 'default' => $input['default'],
                 'comment' => $input['comment'],
+                'null' => $input['null'],
             ),
         );
         $state = $this->dbforge->add_column($table_name, $example);
@@ -177,5 +196,18 @@ class Admin extends CI_Controller
         } else {
             $this->output->set_status_header(400);
         }
+    }
+    public function list($table_name, $column)
+    {
+        $this->table_model->tableName = $table_name;
+        $datas = $this->table_model->get_all([], [], 1000);
+        $newData = [];
+        foreach ($datas as $key => $value) {
+            $newData[$key] = [
+                'id' => $value->id,
+                'label' => $value->$column
+            ];
+        }
+        return $newData;
     }
 }

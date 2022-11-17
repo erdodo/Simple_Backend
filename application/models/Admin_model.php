@@ -37,15 +37,18 @@ class Admin_model extends CI_Model
         $display = $data['display'];
         $old_name = $data['old_name'];
         $old_display = $data['old_display'];
-        $query = "RENAME TABLE `Simple`.`$old_name` TO `Simple`.`$name`;";
-        $query2 = "ALTER TABLE `$name` COMMENT = '$display';";
-        $this->db->query($query);
-
-        $this->db->query($query2);
+        if ($name != $old_name) {
+            $query = "RENAME TABLE `Simple`.`$old_name` TO `Simple`.`$name`;";
+            $this->db->query($query);
+        }
+        if ($display != $old_display) {
+            $query2 = "ALTER TABLE `$name` COMMENT = '$display';";
+            $this->db->query($query2);
+        }
     }
     public function deleteTable($table_name)
     {
-        $query = "DROP TABLE $table_name;";
+        $query = "DROP TABLE `$table_name`;";
         $this->db->query($query);
     }
     public function update_columns($tableName, $column)

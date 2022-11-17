@@ -1,0 +1,1 @@
+<h5>Ödeme başarılı. Sekmeyi kapatabilirsiniz</h5>
